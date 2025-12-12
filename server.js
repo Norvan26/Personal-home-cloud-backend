@@ -1,15 +1,19 @@
-const http = require('http'); // Import the built-in http module
+import http from 'http';
+import { tasks } from './tasks.js';
 
-const host = 'localhost';
-const port = 3000;
+const serverPort = 3000;
 
-const requestListener = function (req, res) {
-  res.writeHead(200, {'Content-Type': 'text/plain'}); // Set the response header
-  res.end('Hello World!\n'); // Send the response body
-};
-
-const server = http.createServer(requestListener);
-
-server.listen(port, host, () => {
-  console.log(`Server is running on http://${host}:${port}/`);
+const server = http.createServer((req, res) => {
+  if (req.url === "/tasks" && req.method === "GET"){
+    res.writeHead(200, {"Content-Type":"application/json"})
+    res.end(JSON.stringify(tasks));
+  } else {
+    res.writeHead(404, {"Content-Type":"application/json"}); 
+    res.end(JSON.stringify({message: "Not Found"}))
+  }
 });
+
+server.listen(serverPort, () => {
+  console.log("server running on port 3000")
+});
+
